@@ -4,7 +4,7 @@ to run: `docker compose up -d`
 
 to seed data: `docker exec -it acknee-api-1 npx mikro-orm seeder:run`
 
-> to resest db: `docker exec -it acknee-api-1 npx mikro-orm migration:fresh`\_
+> to resest db: `docker exec -it acknee-api-1 npx mikro-orm migration:fresh`
 
 ## endpoints
 
@@ -32,7 +32,7 @@ all box endpoints require **Bearer Token** in header
 - GET `localhost:3000/box/list`
   - needs query params: `lat: string & lon: string`
   - optional query params: `search: string, page: number, limit: number`
-  - returns a paginated list of boxes order by closest first
+  - returns a paginated list of boxes ordered by closest first
   - example: `localhost:3000/box/list?lon=51.066875&lat=13.746496`
   - example: `localhost:3000/box/list?lon=51.066875&lat=13.746496&limit=3&search=b23&page=1`
 - GET `localhost:3000/box/:boxId`
@@ -63,14 +63,14 @@ all box endpoints require **Bearer Token** in header
 
 ### used technologies:
 
-- posgres - used it because of its postgis integrated location capabilities and structured data needs
+- postgres - used it because of its postgis integrated location capabilities and structured data needs
 - nestjs - used it because i deemed it fit for this task (i also like it the most)
 - mikroorm - i like using orms, chose this based on my personal preference
 - jwt bearer token - used it as its an api for a phone app, where passing jwt tokens in cookies wouldn't make much sense
 
 ### notes
 
-- tests, diagram and 2fa would take more time which i don't have
+- tests, diagram and 2fa would take more time which i don't have - focused on what I thought was most important, I'm happy to talk about it more
 - normaly would make different auth guards for different roles, this example needs just one tho
 - to view db, look in .env for credentials
 
