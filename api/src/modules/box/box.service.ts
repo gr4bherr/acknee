@@ -58,4 +58,20 @@ export class BoxService {
 
     return new Paginated(limit, page, total, data)
   }
+
+  async open(
+    box: Box
+    // package: Package
+  ): Promise<boolean> {
+    // validate if i can open box (which cell to open?)
+
+    // mock
+    return Math.random() < 0.5
+  }
+  async onClosed(box: Box): Promise<boolean> {
+    // send notification
+
+    // mock
+    return Math.random() < 0.5
+  }
 }

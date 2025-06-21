@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Param,
@@ -9,13 +10,14 @@ import {
 } from '@nestjs/common'
 import { BoxService } from './box.service'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { BoxDistanceDto, BoxDto } from './box.dto'
+import { BoxDistanceDto, BoxDto, OpenBoxInput } from './box.dto'
 import { PaginatedDto } from '@/utils/pagination'
 import {
   LatitudePipe,
   LongitudePipe,
   PageAndLimitPipe,
 } from '@/utils/validation.pipes'
+import { SuccessDto } from '@/utils/dtos'
 
 @Controller('box')
 @UseGuards(JwtAuthGuard)
@@ -47,9 +49,28 @@ export class BoxController {
     return this.boxService.findById(boxId)
   }
 
-  @Post(':boxCode/open')
-  async openBox() {}
+  @Post(':boxId/open')
+  async openBox(
+    @Param('boxId', ParseIntPipe) boxId: number,
+    @Body() input: OpenBoxInput
+  ): Promise<SuccessDto> {
+    // const package = this.packageService.findByCode(input.packageCode)
+    const box = await this.boxService.findById(boxId)
 
-  @Post(':boxCode/closed')
-  async boxClosed() {}
+    const canOpen = await this.boxService.open(
+      box
+      // package
+    )
+    return new SuccessDto(canOpen)
+  }
+
+  @Post(':boxId/closed')
+  async boxClosed(
+    @Param('boxId', ParseIntPipe) boxId: number
+  ): Promise<SuccessDto> {
+    const box = await this.boxService.findById(boxId)
+
+    const canOpen = await this.boxService.onClosed(box)
+    return new SuccessDto(canOpen)
+  }
 }
