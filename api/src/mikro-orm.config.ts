@@ -3,6 +3,7 @@ import { PostgreSqlDriver } from '@mikro-orm/postgresql'
 import { Migrator } from '@mikro-orm/migrations'
 import { defineConfig } from '@mikro-orm/core'
 import { SeedManager } from '@mikro-orm/seeder'
+import { DevSeeder } from './database/seeders/dev.seeder'
 
 dotenv.config()
 
@@ -31,12 +32,12 @@ export default defineConfig<PostgreSqlDriver>({
     path: './dist/database/migrations',
     pathTs: './src/database/migrations',
   },
-  //   seeder: {
-  //     defaultSeeder: DevSeeder.name,
-  //     path: './dist/database/seeders',
-  //     pathTs: './src/database/seeders',
-  //     glob: '!(*.d).{js,ts}',
-  //     emit: 'ts',
-  //     fileName: (className: string) => className,
-  //   },
+  seeder: {
+    defaultSeeder: DevSeeder.name,
+    path: './dist/database/seeders',
+    pathTs: './src/database/seeders',
+    glob: '!(*.d).{js,ts}',
+    emit: 'ts',
+    fileName: (className: string) => className,
+  },
 })
