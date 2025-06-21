@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: acknee
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/data/postgres
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.local
+    entrypoint: sh ./entrypoint.sh
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - ./api:/usr/src/app
+
+volumes:
+  postgres-data:
