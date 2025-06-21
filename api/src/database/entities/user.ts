@@ -16,7 +16,7 @@ export class User {
   constructor(
     email: string,
     password: string,
-    role: UserRole = UserRole.Supplier
+    role: UserRole = UserRole.Customer
   ) {
     this.email = email
     this.password = password
@@ -34,7 +34,7 @@ export const userSchema = new EntitySchema<User>({
       type: 'enum',
       nativeEnumName: 'user_role',
       items: Object.values(UserRole),
-      default: UserRole.Supplier,
+      default: UserRole.Customer,
     },
     orders: {
       kind: '1:m',

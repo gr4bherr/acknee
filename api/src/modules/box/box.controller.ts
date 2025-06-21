@@ -18,11 +18,15 @@ import {
   PageAndLimitPipe,
 } from '@/utils/validation.pipes'
 import { SuccessDto } from '@/utils/dtos'
+import { PackageService } from '../package/package.service'
 
 @Controller('box')
 @UseGuards(JwtAuthGuard)
 export class BoxController {
-  constructor(private readonly boxService: BoxService) {}
+  constructor(
+    private readonly boxService: BoxService,
+    private readonly packageService: PackageService
+  ) {}
 
   @Get('list')
   async getList(
@@ -54,23 +58,25 @@ export class BoxController {
     @Param('boxId', ParseIntPipe) boxId: number,
     @Body() input: OpenBoxInput
   ): Promise<SuccessDto> {
-    // const package = this.packageService.findByCode(input.packageCode)
+    const pack = await this.packageService.findByCode(input.packageCode)
     const box = await this.boxService.findById(boxId)
 
-    const canOpen = await this.boxService.open(
-      box
-      // package
-    )
+    const canOpen = await this.boxService.open(box, pack)
     return new SuccessDto(canOpen)
   }
 
   @Post(':boxId/closed')
   async boxClosed(
-    @Param('boxId', ParseIntPipe) boxId: number
+    @Param('boxId', ParseIntPipe) boxId: number,
+    @Body() input: OpenBoxInput
   ): Promise<SuccessDto> {
+    const pack = await this.packageService.findByCode(input.packageCode, [
+      'order',
+      'order.user',
+    ])
     const box = await this.boxService.findById(boxId)
 
-    const canOpen = await this.boxService.onClosed(box)
+    const canOpen = await this.boxService.onClosed(box, pack)
     return new SuccessDto(canOpen)
   }
 }

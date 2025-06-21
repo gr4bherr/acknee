@@ -12,9 +12,13 @@ export class DevSeeder extends Seeder {
     const user = new User(
       'user@test.com',
       await bcrypt.hash('acknee', 10),
-      UserRole.Customer
+      UserRole.Supplier
     )
-    em.persist(user)
+    const customer = new User(
+      'customer@test.com',
+      await bcrypt.hash('acknee', 10)
+    )
+    em.persist([user, customer])
 
     const boxes = boxLocationData.map((boxLocation) => {
       const box = new Box(
@@ -26,7 +30,7 @@ export class DevSeeder extends Seeder {
     })
     em.persist(boxes)
 
-    const order = new Order(user)
+    const order = new Order(customer)
     em.persist(order)
 
     const pack = new Package('1bo3j5b', order)

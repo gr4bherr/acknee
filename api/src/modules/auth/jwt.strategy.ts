@@ -1,10 +1,10 @@
 import { ConfigService } from '@nestjs/config'
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { UserService } from '@/modules/user/user.service'
 import { Request } from 'express'
-import { User } from '@/database/entities/user'
+import { User, UserRole } from '@/database/entities/user'
 import { JwtPayload } from './auth.dto'
 
 @Injectable()
@@ -24,6 +24,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload): Promise<User> {
-    return await this.userService.findById(payload.userId)
+    const user = await this.userService.findById(payload.userId)
+    if (user.role !== UserRole.Supplier) {
+      throw new UnauthorizedException(
+        'user has to be a supplier to operate boxes'
+      )
+    }
+
+    return user
   }
 }

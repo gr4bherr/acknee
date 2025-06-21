@@ -4,6 +4,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { BoxDistanceDto } from './box.dto'
 import { Paginated } from '@/utils/pagination'
 import { DEFAULT_PAGINATION_LIMIT } from '@/utils/constants'
+import { Package } from '@/database/entities/package'
 
 @Injectable()
 export class BoxService {
@@ -59,17 +60,17 @@ export class BoxService {
     return new Paginated(limit, page, total, data)
   }
 
-  async open(
-    box: Box
-    // package: Package
-  ): Promise<boolean> {
+  async open(box: Box, pack: Package): Promise<boolean> {
     // validate if i can open box (which cell to open?)
 
     // mock
     return Math.random() < 0.5
   }
-  async onClosed(box: Box): Promise<boolean> {
-    // send notification
+  async onClosed(box: Box, pack: Package): Promise<boolean> {
+    // mock send email
+    console.log(
+      `sending email to ${pack.order.user.email} about the package being deliverd to box`
+    )
 
     // mock
     return Math.random() < 0.5

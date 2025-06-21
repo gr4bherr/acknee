@@ -5,7 +5,7 @@ Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
   handleRequest(err: any, user: any) {
     if (err || !user) {
-      throw new UnauthorizedException('access token not valid')
+      throw new UnauthorizedException(err?.message ?? 'access token not valid')
     }
     return user
   }
