@@ -63,7 +63,7 @@ export class BoxService {
   async open(box: Box, pack: Package): Promise<boolean> {
     // validate if i can open box (which cell to open?)
 
-    // mock
+    // mock - open if true, don't open if not
     return Math.random() < 0.5
   }
   async onClosed(box: Box, pack: Package): Promise<boolean> {
@@ -72,7 +72,7 @@ export class BoxService {
       `sending email to ${pack.order.user.email} about the package being deliverd to box`
     )
 
-    // mock
+    // mock - closed successfully if true
     return Math.random() < 0.5
   }
 }

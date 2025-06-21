@@ -76,7 +76,7 @@ export class BoxController {
     ])
     const box = await this.boxService.findById(boxId)
 
-    const canOpen = await this.boxService.onClosed(box, pack)
-    return new SuccessDto(canOpen)
+    const closed = await this.boxService.onClosed(box, pack)
+    return new SuccessDto(closed)
   }
 }
