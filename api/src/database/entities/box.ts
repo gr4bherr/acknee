@@ -1,4 +1,5 @@
 import { EntitySchema, Type } from '@mikro-orm/core'
+import wkx from 'wkx'
 
 export class GeographyPointType extends Type<
   { lon: number; lat: number },
@@ -13,9 +14,18 @@ export class GeographyPointType extends Type<
   }
 
   convertToJSValue(value: string): { lon: number; lat: number } {
-    const matches = value.match(/POINT\((-?\d+\.?\d*)\s(-?\d+\.?\d*)\)/)
-    if (!matches) throw new Error('Invalid geography point format')
-    return { lon: parseFloat(matches[1]), lat: parseFloat(matches[2]) }
+    if (!value) {
+      return null
+    }
+
+    const buffer = Buffer.from(value, 'hex')
+    const geom = wkx.Geometry.parse(buffer)
+
+    if (geom instanceof wkx.Point) {
+      return { lon: geom.x, lat: geom.y }
+    }
+
+    throw new Error('Invalid geography point format: not a Point geometry')
   }
 }
 

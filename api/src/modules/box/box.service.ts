@@ -1,10 +1,6 @@
 import { Box } from '@/database/entities/box'
-import {
-  EntityManager,
-  EntityRepository,
-  FilterQuery,
-} from '@mikro-orm/postgresql'
-import { Injectable } from '@nestjs/common'
+import { EntityManager, EntityRepository } from '@mikro-orm/postgresql'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { BoxDistanceDto } from './box.dto'
 import { Paginated } from '@/utils/pagination'
 import { DEFAULT_PAGINATION_LIMIT } from '@/utils/constants'
@@ -15,6 +11,14 @@ export class BoxService {
 
   constructor(private readonly em: EntityManager) {
     this.boxRepository = this.em.getRepository(Box)
+  }
+
+  async findById(id: number): Promise<Box> {
+    try {
+      return await this.boxRepository.findOneOrFail({ id })
+    } catch {
+      throw new NotFoundException(`box with id ${id} not found`)
+    }
   }
 
   async findWithDistance({
@@ -38,8 +42,10 @@ export class BoxService {
       SELECT 
         id, 
         identifier,
-        ST_X(geom::geometry) AS lon, 
-        ST_Y(geom::geometry) AS lat,
+        json_build_object(
+          'lat', ST_Y(geom::geometry),
+          'lon', ST_X(geom::geometry)
+        ) AS geom,
         ST_Distance(geom, ST_SetSRID(ST_MakePoint(?, ?), 4326)) as distance
       FROM box
       WHERE geom IS NOT NULL

@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Param,
   ParseIntPipe,
   Post,
   Query,
@@ -8,7 +9,7 @@ import {
 } from '@nestjs/common'
 import { BoxService } from './box.service'
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'
-import { BoxDistanceDto } from './box.dto'
+import { BoxDistanceDto, BoxDto } from './box.dto'
 import { PaginatedDto } from '@/utils/pagination'
 import {
   LatitudePipe,
@@ -39,8 +40,12 @@ export class BoxController {
     return new PaginatedDto(paginated, paginated.data)
   }
 
-  @Get(':boxCode/detail')
-  async getBoxDetail() {}
+  @Get(':boxId')
+  async getBoxDetail(
+    @Param('boxId', ParseIntPipe) boxId: number
+  ): Promise<BoxDto> {
+    return this.boxService.findById(boxId)
+  }
 
   @Post(':boxCode/open')
   async openBox() {}
