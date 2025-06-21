@@ -27,7 +27,7 @@ export class TokensDto {
   }
 }
 
-export class JwtPayload {
+export interface JwtPayload {
   userId: number
   userEmail: string
 }
