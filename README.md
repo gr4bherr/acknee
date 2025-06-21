@@ -2,6 +2,8 @@
 
 to run: `docker compose up -d`
 
+to run e2e tests: `docker exec -it acknee-api-1 npm run test:e2e`
+
 to seed data: `docker exec -it acknee-api-1 npx mikro-orm seeder:run`
 
 > to resest db: `docker exec -it acknee-api-1 npx mikro-orm migration:fresh`
@@ -49,7 +51,7 @@ all box endpoints require **Bearer Token** in header
 
 ## overview
 
-#### number of hours worked on task: 6h
+#### number of hours worked on task: 7h
 
 ### used tools:
 
@@ -70,7 +72,8 @@ all box endpoints require **Bearer Token** in header
 
 ### notes
 
-- tests, diagram and 2fa would take more time which i don't have - focused on what I thought was most important, I'm happy to talk about it more
+- tests are not close to perfect and exhaustive - just wanted for you to be able to run them and not have to manually test each endpoint
+- diagram and 2fa would take more time which i don't have - focused on what I thought was most important, I'm happy to talk about it more
 - normaly would make different auth guards for different roles, this example needs just one tho
 - to view db, look in .env for credentials
 
