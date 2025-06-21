@@ -6,7 +6,7 @@ to seed data: `docker exec -it acknee-api-1 npx mikro-orm seeder:run`
 
 > to resest db: `docker exec -it acknee-api-1 npx mikro-orm migration:fresh`\_
 
-## endpints
+## endpoints
 
 `auth/`
 
