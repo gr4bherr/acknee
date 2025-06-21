@@ -4,9 +4,9 @@ to run: `docker compose up -d`
 
 to seed data: `docker exec -it acknee-api-1 npx mikro-orm seeder:run`
 
-to resest db: `docker exec -it acknee-api-1 npx mikro-orm migration:fresh`
+> to resest db: `docker exec -it acknee-api-1 npx mikro-orm migration:fresh`\_
 
-## example endpints
+## endpints
 
 `auth/`
 
@@ -70,4 +70,93 @@ all box endpoints require **Bearer Token** in header
 
 ### notes
 
+- tests, diagram and 2fa would take more time which i don't have
+- normaly would make different auth guards for different roles, this example needs just one tho
+- to view db, look in .env for credentials
+
+## curls to test:
+
+#### replace **YOUR_TOKEN** with the accessToken you get from login
+
+login
+
+- `curl -X POST 'localhost:3000/auth/login' --header 'Content-Type: application/json' --data-raw '{ "email": "user@test.com", "password": "acknee" }'`
+- expected result: `{ "accessToken": "eyJhbGciOi...", "refreshToken": "eyJhbGc..." }`
 -
+- `curl -X POST 'localhost:3000/auth/login' --header 'Content-Type: application/json' --data-raw '{ "email": "customer@test.com", "password": "acknee" }'`
+- expected result: `{ "accessToken": "eyJhbGciOi...", "refreshToken": "eyJhbGc..." }`
+
+box/list
+
+- `curl -X GET 'localhost:3000/box/list?lon=51.066875&lat=13.746496&limit=3&search=b23&page=1' --header 'Authorization: Bearer YOUR_TOKEN'`
+- expected result: `{
+  "currentPage": 1,
+  "totalPages": 3815,
+  "isPrev": false,
+  "isNext": true,
+  "total": 11444,
+  "nodes": [
+    {
+      "id": 2364,
+      "identifier": "B2364",
+      "geom": {
+        "lat": 49.7766,
+        "lon": 19.07036
+      },
+      "distance": 4941531.75665323
+    },
+    {
+      "id": 2348,
+      "identifier": "B2348",
+      "geom": {
+        "lat": 49.79804,
+        "lon": 19.09204
+      },
+      "distance": 4941998.19619478
+    },
+    {
+      "id": 2383,
+      "identifier": "B2383",
+      "geom": {
+        "lat": 49.7831691,
+        "lon": 19.0673607
+      },
+      "distance": 4942185.39517013
+    }
+  ]
+}`
+
+box/:boxId
+
+- `curl -X GET 'localhost:3000/box/234' \ --header 'Authorization: Bearer YOUR_TOKEN'`
+- expected result: `{
+  "id": 234,
+  "identifier": "B234",
+  "geom": {
+    "lon": 17.0313134,
+    "lat": 51.0926429
+  }
+}`
+-
+- `curl -X GET 'localhost:3000/box/123412341234' \ --header 'Authorization: Bearer YOUR_TOKEN'`
+- expected result: `{
+  "message": "box with id 123412341234 not found",
+  "error": "Not Found",
+  "statusCode": 404
+}`
+
+box/:boxId/open
+
+- `curl -X POST 'localhost:3000/box/234/open' --header 'Content-Type: application json' --data-raw '{ "packageCode": "1bo3j5b" }' --header 'Authorization: Bearer YOUR_TOKEN'`
+- expected result: `{"success":true}`
+-
+- `curl -X POST 'localhost:3000/box/234/open' --header 'Content-Type: application/json' --data-raw '{ "packageCode": "xxxx" }' --header 'Authorization: Bearer YOUR_TOKEN'`
+- expected result: `{ "message": "package with code xxxx not found", "error": "Not Found", "statusCode": 404 }`
+
+box/:boxId/closed
+
+- `curl -X POST 'localhost:3000/box/234/closed' --header 'Content-Type: application json' --data-raw '{ "packageCode": "1bo3j5b" }' --header 'Authorization: Bearer YOUR_TOKEN'`
+- expected result: `{"success":true}`
+-
+- `curl -X POST 'localhost:3000/box/234/closed' --header 'Content-Type: application/json' --data-raw '{ "packageCode": "xxxx" }' --header 'Authorization: Bearer YOUR_TOKEN'`
+- expected result: `{ "message": "package with code xxxx not found", "error": "Not Found", "statusCode": 404 }`
